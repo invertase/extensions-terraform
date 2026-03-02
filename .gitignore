@@ -1,0 +1,15 @@
+# Node
+node_modules/
+lib/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+*.tfplan
+.terraform.lock.hcl
+*.zip
+
+# Misc
+.DS_Store
+.env
