@@ -84,24 +84,24 @@ export const translateInputString = (string: string, language: string) => {
 export const translateStringComplete = (
   string: string,
   language: string,
-  translatedString: string
+  translatedString: string,
 ) => {
   logger.log(
-    messages.translateStringComplete(string, language, translatedString)
+    messages.translateStringComplete(string, language, translatedString),
   );
 };
 
 export const translateStringError = (
   string: string,
   language: string,
-  err: Error
+  err: Error,
 ) => {
   logger.error(...messages.translateStringError(string, language, err));
 };
 
 export const translateInputStringToAllLanguages = (
   string: string,
-  languages: string[]
+  languages: string[],
 ) => {
   logger.log(messages.translateInputStringToAllLanguages(string, languages));
 };
@@ -113,14 +113,14 @@ export const translateInputToAllLanguagesComplete = (string: string) => {
 export const partialTranslateError = (
   input: string,
   reasons: string[],
-  numLanguages: number
+  numLanguages: number,
 ) => {
   logger.error(messages.partialTranslateError(input, reasons, numLanguages));
 };
 
 export const translateInputToAllLanguagesError = (
   string: string,
-  err: Error
+  err: Error,
 ) => {
   logger.error(...messages.translateInputToAllLanguagesError(string, err));
 };

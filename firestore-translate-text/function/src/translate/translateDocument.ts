@@ -1,16 +1,8 @@
-import * as logs from "../logs";
-import * as admin from "firebase-admin";
-import * as validators from "../validators";
+import type * as admin from "firebase-admin";
 import config from "../config";
-import {
-  extractInput,
-  extractLanguages,
-  extractOutput,
-  filterLanguagesFn,
-  translateString,
-  Translation,
-  updateTranslations,
-} from "./common";
+import * as logs from "../logs";
+import * as validators from "../validators";
+import { extractInput, extractLanguages } from "./common";
 import {
   translateMultiple,
   translateMultipleBackfill,
@@ -19,7 +11,7 @@ import { translateSingle, translateSingleBackfill } from "./translateSingle";
 
 export const translateDocumentBackfill = async (
   snapshot: admin.firestore.DocumentSnapshot,
-  bulkWriter: admin.firestore.BulkWriter
+  bulkWriter: admin.firestore.BulkWriter,
 ): Promise<void> => {
   const input: any = extractInput(snapshot);
 
@@ -31,7 +23,7 @@ export const translateDocumentBackfill = async (
 };
 
 export const translateDocument = async (
-  snapshot: admin.firestore.DocumentSnapshot
+  snapshot: admin.firestore.DocumentSnapshot,
 ): Promise<void> => {
   const input: any = extractInput(snapshot);
   const languages = extractLanguages(snapshot);
@@ -40,7 +32,7 @@ export const translateDocument = async (
     validators.fieldNameIsTranslationPath(
       config.inputFieldName,
       config.outputFieldName,
-      languages
+      languages,
     )
   ) {
     logs.inputFieldNameIsOutputPath();

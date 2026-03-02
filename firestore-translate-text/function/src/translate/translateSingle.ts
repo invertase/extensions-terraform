@@ -1,19 +1,19 @@
-import * as logs from "../logs";
-import * as events from "../events";
-import * as admin from "firebase-admin";
+import type * as admin from "firebase-admin";
 import config from "../config";
+import * as events from "../events";
+import * as logs from "../logs";
 import {
   extractOutput,
   filterLanguagesFn,
+  type Translation,
   translateString,
-  Translation,
   updateTranslations,
 } from "./common";
 
 export const translateSingle = async (
   input: string,
   languages: string[],
-  snapshot: admin.firestore.DocumentSnapshot
+  snapshot: admin.firestore.DocumentSnapshot,
 ): Promise<void> => {
   logs.translateInputStringToAllLanguages(input, languages);
 
@@ -23,7 +23,7 @@ export const translateSingle = async (
         language: targetLanguage,
         output: await translateString(input, targetLanguage),
       };
-    }
+    },
   );
 
   try {
@@ -36,7 +36,7 @@ export const translateSingle = async (
         output[translation.language] = translation.output;
         return output;
       },
-      {} as { [language: string]: string }
+      {} as { [language: string]: string },
     );
 
     return updateTranslations(snapshot, translationsMap);
@@ -51,12 +51,12 @@ export const translateSingle = async (
 export const translateSingleBackfill = async (
   input: string,
   snapshot: admin.firestore.DocumentSnapshot,
-  bulkWriter: admin.firestore.BulkWriter
+  bulkWriter: admin.firestore.BulkWriter,
 ): Promise<void> => {
   const existingTranslations = extractOutput(snapshot) || {};
   // During backfills, we filter out languages that we already have translations for.
   const languages = config.languages.filter(
-    filterLanguagesFn(existingTranslations)
+    filterLanguagesFn(existingTranslations),
   );
 
   const tasks = languages.map(
@@ -65,7 +65,7 @@ export const translateSingleBackfill = async (
         language: targetLanguage,
         output: await translateString(input, targetLanguage),
       };
-    }
+    },
   );
 
   const translations = await Promise.allSettled(tasks);
@@ -88,7 +88,7 @@ export const translateSingleBackfill = async (
   if (failedTranslations.length && !successfulTranslations.length) {
     logs.translateInputToAllLanguagesError(
       input,
-      new Error(failedTranslations.join("\n"))
+      new Error(failedTranslations.join("\n")),
     );
   } else if (failedTranslations.length && successfulTranslations.length) {
     logs.partialTranslateError(input, failedTranslations, translations.length);
@@ -96,7 +96,7 @@ export const translateSingleBackfill = async (
     throw `Error while translating '${input}': ${
       failedTranslations.length
     } out of ${languages.length} translations failed: ${failedTranslations.join(
-      "\n"
+      "\n",
     )}`;
   } else {
     logs.translateInputToAllLanguagesComplete(input);

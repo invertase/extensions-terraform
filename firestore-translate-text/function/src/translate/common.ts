@@ -1,11 +1,11 @@
-import { v2 } from "@google-cloud/translate";
-import * as logs from "../logs";
-import * as events from "../events";
-import * as admin from "firebase-admin";
-import config from "../config";
-import { genkit, Genkit, z, ModelReference } from "genkit";
-import vertexAI from "@genkit-ai/vertexai";
 import googleAI from "@genkit-ai/googleai";
+import vertexAI from "@genkit-ai/vertexai";
+import { v2 } from "@google-cloud/translate";
+import * as admin from "firebase-admin";
+import { type Genkit, genkit, type ModelReference, z } from "genkit";
+import config from "../config";
+import * as events from "../events";
+import * as logs from "../logs";
 
 /**
  * Represents a translation result with target language and translated text
@@ -53,7 +53,7 @@ export class GoogleTranslator implements ITranslator {
     try {
       const [translatedString] = await this.client.translate(
         text,
-        targetLanguage
+        targetLanguage,
       );
       logs.translateStringComplete(text, targetLanguage, translatedString);
       return translatedString;
@@ -90,7 +90,7 @@ export class GenkitTranslator implements ITranslator {
     this.plugin = plugin;
     if (plugin === "googleai" && !config.googleAIAPIKey) {
       throw new Error(
-        "Google AI API key is required for Genkit Google AI translations"
+        "Google AI API key is required for Genkit Google AI translations",
       );
     }
 
@@ -215,10 +215,10 @@ export class TranslationService {
    * @returns A function that returns true for languages that need translation
    */
   filterLanguagesFn(
-    existingTranslations: Record<string, any>
+    existingTranslations: Record<string, any>,
   ): (targetLanguage: string) => boolean {
     return (targetLanguage: string) => {
-      if (existingTranslations[targetLanguage] != undefined) {
+      if (existingTranslations[targetLanguage] !== undefined) {
         logs.skippingLanguage(targetLanguage);
         return false;
       }
@@ -234,7 +234,7 @@ export class TranslationService {
    */
   async updateTranslations(
     snapshot: admin.firestore.DocumentSnapshot,
-    translations: any
+    translations: any,
   ): Promise<void> {
     logs.updateDocument(snapshot.ref.path);
 
@@ -257,7 +257,7 @@ const translationService = config.useGenkit
       new GenkitTranslator({
         plugin: config.geminiProvider as "vertexai" | "googleai",
         model: config.geminiModel,
-      })
+      }),
     )
   : new TranslationService(new GoogleTranslator(process.env.PROJECT_ID!));
 

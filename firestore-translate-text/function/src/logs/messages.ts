@@ -28,11 +28,15 @@ export const messages = {
   ],
   inputFieldNameIsOutputPath: () =>
     "The `Input` field name must not be the same as an `Output` path for this extension to function correctly",
-  partialTranslateError: (input: string, reasons: string[], numLanguages: number) =>
+  partialTranslateError: (
+    input: string,
+    reasons: string[],
+    numLanguages: number,
+  ) =>
     `Failed to translate ${input} to ${
       reasons.length
     } languages of the requested ${numLanguages}. Reasons: ${reasons.join(
-      "\n"
+      "\n",
     )}`,
   skippingLanguage: (lang: string) =>
     `Found existing translation to ${lang}, skipping.`,
@@ -45,7 +49,7 @@ export const messages = {
   translateStringComplete: (
     string: string,
     language: string,
-    translated: string
+    translated: string,
   ) =>
     `Finished translating string: '${string}' into language(s): '${language}' : '${translated}'`,
   translateStringError: (string: string, language: string, err: Error) => [
@@ -54,7 +58,7 @@ export const messages = {
   ],
   translateInputStringToAllLanguages: (string: string, languages: string[]) =>
     `Translating string: '${string}' into language(s): '${languages.join(
-      ","
+      ",",
     )}'`,
   translateInputToAllLanguagesComplete: (string: string) =>
     `Finished translating string: '${string}'`,

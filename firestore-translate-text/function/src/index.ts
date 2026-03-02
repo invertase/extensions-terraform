@@ -18,15 +18,15 @@ import * as admin from "firebase-admin";
 import { onDocumentWritten } from "firebase-functions/v2/firestore";
 
 import config from "./config";
-import * as logs from "./logs";
-import * as validators from "./validators";
 import * as events from "./events";
+import * as logs from "./logs";
 import {
-  translateDocument,
-  extractLanguages,
-  updateTranslations,
   extractInput,
+  extractLanguages,
+  translateDocument,
+  updateTranslations,
 } from "./translate";
+import * as validators from "./validators";
 
 enum ChangeType {
   CREATE,
@@ -40,7 +40,7 @@ events.setupEventChannel();
 
 logs.init(config);
 
-export const fstranslate = onDocumentWritten(
+export const translateText = onDocumentWritten(
   `${process.env.COLLECTION_PATH}/{documentId}`,
   async (event): Promise<void> => {
     const change = event.data;
@@ -59,7 +59,7 @@ export const fstranslate = onDocumentWritten(
       validators.fieldNameIsTranslationPath(
         inputFieldName,
         outputFieldName,
-        languages
+        languages,
       )
     ) {
       logs.inputFieldNameIsOutputPath();
@@ -85,10 +85,12 @@ export const fstranslate = onDocumentWritten(
       logs.complete();
     } catch (err) {
       logs.error(err instanceof Error ? err : new Error(String(err)));
-      await events.recordErrorEvent(err instanceof Error ? err : new Error(String(err)));
+      await events.recordErrorEvent(
+        err instanceof Error ? err : new Error(String(err)),
+      );
     }
     await events.recordCompletionEvent({ event });
-  }
+  },
 );
 
 const getChangeType = (change: {
@@ -105,7 +107,7 @@ const getChangeType = (change: {
 };
 
 const handleCreateDocument = async (
-  snapshot: admin.firestore.DocumentSnapshot
+  snapshot: admin.firestore.DocumentSnapshot,
 ): Promise<void> => {
   const input = extractInput(snapshot);
   if (input) {
@@ -122,7 +124,7 @@ const handleDeleteDocument = (): void => {
 
 const handleUpdateDocument = async (
   before: admin.firestore.DocumentSnapshot,
-  after: admin.firestore.DocumentSnapshot
+  after: admin.firestore.DocumentSnapshot,
 ): Promise<void> => {
   const inputBefore = extractInput(before);
   const inputAfter = extractInput(after);

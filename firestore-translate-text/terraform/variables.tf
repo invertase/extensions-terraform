@@ -62,10 +62,27 @@ variable "google_ai_api_key" {
   sensitive   = true
 }
 
+variable "enable_custom_events" {
+  description = "Enable custom Eventarc lifecycle events (onStart, onError, onSuccess, onCompletion). Creates an Eventarc channel and publishes events during translation."
+  type        = bool
+  default     = false
+}
+
+variable "custom_event_types" {
+  description = "Event types to publish when enable_custom_events is true."
+  type        = list(string)
+  default = [
+    "firebase.extensions.firestore-translate-text.v1.onStart",
+    "firebase.extensions.firestore-translate-text.v1.onError",
+    "firebase.extensions.firestore-translate-text.v1.onSuccess",
+    "firebase.extensions.firestore-translate-text.v1.onCompletion",
+  ]
+}
+
 variable "function_name" {
   description = "Name for the Cloud Function resource."
   type        = string
-  default     = "fstranslate"
+  default     = "translateText"
 }
 
 variable "function_min_instances" {

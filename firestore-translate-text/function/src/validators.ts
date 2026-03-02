@@ -20,7 +20,7 @@ export const fieldNamesMatch = (field1: string, field2: string): boolean =>
 export const fieldNameIsTranslationPath = (
   inputFieldName: string,
   outputFieldName: string,
-  languages: string[]
+  languages: string[],
 ): boolean => {
   for (const language of languages) {
     if (inputFieldName === `${outputFieldName}.${language}`) {

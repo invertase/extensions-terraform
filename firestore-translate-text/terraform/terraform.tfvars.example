@@ -1,0 +1,27 @@
+project_id      = "my-gcp-project"
+region          = "us-central1"
+collection_path = "translations"
+
+# Field names
+input_field_name  = "input"
+output_field_name = "translated"
+
+# Comma-separated ISO 639-1 language codes
+languages = "en,es,de,fr"
+
+# Optional: per-document language override field (leave empty to disable)
+# languages_field_name = "languages"
+
+# Translation provider: "translate", "gemini-googleai", or "gemini-vertexai"
+translation_provider = "translate"
+
+# Gemini settings (only used when translation_provider is a gemini variant)
+# gemini_model      = "gemini-2.5-flash"
+# google_ai_api_key = ""
+
+# Function scaling
+# function_name            = "translateText"
+# function_min_instances   = 0
+# function_max_instances   = 10
+# function_memory_mb       = 256
+# function_timeout_seconds = 60
