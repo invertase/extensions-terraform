@@ -159,7 +159,7 @@ resource "google_cloudfunctions2_function" "fstranslate" {
   description = "Translates strings written to Firestore into multiple languages."
 
   build_config {
-    runtime     = "nodejs22"
+    runtime     = "nodejs24"
     entry_point = "fstranslate"
 
     source {
