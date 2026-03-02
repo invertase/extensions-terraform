@@ -5,6 +5,7 @@
     "module": "commonjs",
     "noImplicitReturns": true,
     "sourceMap": false,
+    "rootDir": "src",
     "outDir": "lib",
     "skipLibCheck": true
   },
