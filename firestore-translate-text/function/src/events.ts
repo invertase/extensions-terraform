@@ -10,11 +10,11 @@ let eventChannel: eventArc.Channel | undefined;
 
 /** setup events */
 export const setupEventChannel = () => {
-  eventChannel =
-    process.env.EVENTARC_CHANNEL &&
-    getEventarc().channel(process.env.EVENTARC_CHANNEL, {
-      allowedEventTypes: process.env.EXT_SELECTED_EVENTS,
-    });
+  eventChannel = process.env.EVENTARC_CHANNEL
+    ? getEventarc().channel(process.env.EVENTARC_CHANNEL, {
+        allowedEventTypes: process.env.EXT_SELECTED_EVENTS,
+      })
+    : undefined;
 };
 
 export const recordStartEvent = async (data: string | object) => {

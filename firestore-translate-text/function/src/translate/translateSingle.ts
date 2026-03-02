@@ -32,17 +32,18 @@ export const translateSingle = async (
     logs.translateInputToAllLanguagesComplete(input);
 
     const translationsMap: { [language: string]: string } = translations.reduce(
-      (output, translation) => {
+      (output: { [language: string]: string }, translation) => {
         output[translation.language] = translation.output;
         return output;
       },
-      {}
+      {} as { [language: string]: string }
     );
 
     return updateTranslations(snapshot, translationsMap);
   } catch (err) {
-    logs.translateInputToAllLanguagesError(input, err);
-    await events.recordErrorEvent(err as Error);
+    const error = err instanceof Error ? err : new Error(String(err));
+    logs.translateInputToAllLanguagesError(input, error);
+    await events.recordErrorEvent(error);
     throw err;
   }
 };

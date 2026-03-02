@@ -58,8 +58,9 @@ export class GoogleTranslator implements ITranslator {
       logs.translateStringComplete(text, targetLanguage, translatedString);
       return translatedString;
     } catch (err) {
-      logs.translateStringError(text, targetLanguage, err);
-      await events.recordErrorEvent(err as Error);
+      const error = err instanceof Error ? err : new Error(String(err));
+      logs.translateStringError(text, targetLanguage, error);
+      await events.recordErrorEvent(error);
       throw err;
     }
   }
@@ -152,8 +153,9 @@ export class GenkitTranslator implements ITranslator {
       logs.translateStringComplete(text, targetLanguage, response.text);
       return response.output.translation;
     } catch (err) {
-      logs.translateStringError(text, targetLanguage, err);
-      await events.recordErrorEvent(err as Error);
+      const error = err instanceof Error ? err : new Error(String(err));
+      logs.translateStringError(text, targetLanguage, error);
+      await events.recordErrorEvent(error);
       throw err;
     }
   }
@@ -257,7 +259,7 @@ const translationService = config.useGenkit
         model: config.geminiModel,
       })
     )
-  : new TranslationService(new GoogleTranslator(process.env.PROJECT_ID));
+  : new TranslationService(new GoogleTranslator(process.env.PROJECT_ID!));
 
 // Export bound methods for convenience
 export const translateString =

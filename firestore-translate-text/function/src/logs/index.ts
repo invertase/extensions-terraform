@@ -65,7 +65,7 @@ export const fieldNamesNotDifferent = () => {
   logger.error(messages.fieldNamesNotDifferent());
 };
 
-export const init = (config) => {
+export const init = (config: Record<string, unknown>) => {
   logger.log(...messages.init(config));
 };
 
@@ -73,7 +73,7 @@ export const inputFieldNameIsOutputPath = () => {
   logger.error(messages.inputFieldNameIsOutputPath());
 };
 
-export const start = (config) => {
+export const start = (config: Record<string, unknown>) => {
   logger.log(...messages.start(config));
 };
 

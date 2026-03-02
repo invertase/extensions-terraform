@@ -84,8 +84,8 @@ export const fstranslate = onDocumentWritten(
 
       logs.complete();
     } catch (err) {
-      logs.error(err);
-      await events.recordErrorEvent(err as Error);
+      logs.error(err instanceof Error ? err : new Error(String(err)));
+      await events.recordErrorEvent(err instanceof Error ? err : new Error(String(err)));
     }
     await events.recordCompletionEvent({ event });
   }

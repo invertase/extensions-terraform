@@ -13,8 +13,8 @@ export const translateMultiple = async (
   languages: string[],
   snapshot: admin.firestore.DocumentSnapshot
 ): Promise<void> => {
-  let translations = {};
-  let promises = [];
+  let translations: Record<string, Record<string, string | null>> = {};
+  let promises: Array<() => Promise<void>> = [];
 
   Object.entries(input).forEach(([input, value]) => {
     languages.forEach((language) => {

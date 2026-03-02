@@ -28,7 +28,7 @@ export const messages = {
   ],
   inputFieldNameIsOutputPath: () =>
     "The `Input` field name must not be the same as an `Output` path for this extension to function correctly",
-  partialTranslateError: (input: string, reasons: string[], numLanguages) =>
+  partialTranslateError: (input: string, reasons: string[], numLanguages: number) =>
     `Failed to translate ${input} to ${
       reasons.length
     } languages of the requested ${numLanguages}. Reasons: ${reasons.join(
