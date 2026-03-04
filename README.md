@@ -29,17 +29,19 @@ A Cloud Function that listens for writes to a Firestore collection and automatic
 
 - [Terraform](https://developer.hashicorp.com/terraform/install) >= 1.5
 - [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) (`gcloud`)
-- [Bun](https://bun.sh) >= 1.0 (for the CLI and function development)
+- [pnpm](https://pnpm.io) >= 10 (workspace package manager)
+- [Bun](https://bun.sh) >= 1.0 (for the scaffolding CLI)
 - A Google Cloud project with billing enabled
 - A Firestore database in the target project
 
 ## Quick Start
 
-1. **Clone the repository:**
+1. **Clone the repository and install dependencies:**
 
    ```sh
    git clone <repo-url>
    cd extensions-terraform
+   pnpm install
    ```
 
 2. **Navigate to the Terraform directory for the extension you want to deploy:**
@@ -101,8 +103,7 @@ Each extension's Terraform variables are documented in its `variables.tf`. Here 
 Use the CLI to scaffold a new extension with all the boilerplate in place:
 
 ```sh
-cd cli && bun install
-bun src/index.ts init my-new-extension
+pnpm run scaffold my-new-extension
 ```
 
 The CLI prompts for a trigger type (Firestore, HTTP, or Pub/Sub), entry point name, and any trigger-specific configuration, then generates a complete skeleton:
@@ -125,14 +126,18 @@ my-new-extension/
 After scaffolding:
 
 ```sh
-cd my-new-extension/function && bun install
-cd ../terraform && terraform init && terraform validate
+pnpm install
+cd my-new-extension/terraform && terraform init && terraform validate
 ```
 
 ## Project Structure
 
 ```
 extensions-terraform/
+  package.json             # Root workspace — shared devDeps and scripts
+  pnpm-workspace.yaml      # Workspace member globs (cli, */function)
+  tsconfig.base.json       # Shared TypeScript compiler options
+  biome.json               # Shared Biome lint/format rules
   cli/                     # Scaffolding CLI (Bun / TypeScript)
     src/
       index.ts             # Entry point
@@ -157,8 +162,9 @@ extensions-terraform/
         config.ts          # Environment variable configuration
         translate/         # Translation logic (strategy pattern)
         logs/              # Structured logging
-      package.json
-      tsconfig.json
+      package.json         # Runtime deps + build tools for Cloud Build
+      tsconfig.json        # Extends ../../tsconfig.base.json
+      biome.json           # Extends ../../biome.json
     terraform/             # Extension-specific Terraform
       main.tf              # APIs, domain IAM, Secret Manager, module call
       variables.tf         # Input variables
@@ -168,12 +174,20 @@ extensions-terraform/
 
 ## Working on the Function Code
 
-If you want to modify the Cloud Function source:
+All commands run from the repository root:
 
 ```sh
-cd firestore-translate-text/function
-bun install
-bun run build
+pnpm run build          # compile all functions
+pnpm run lint           # lint all packages
+pnpm run clean          # clean all build output
+pnpm run tf:fmt         # format all Terraform files
+pnpm run tf:validate    # validate all Terraform configs
+```
+
+To target a single extension:
+
+```sh
+pnpm --filter firestore-translate-text-functions run build
 ```
 
 The build compiles TypeScript from `src/` to `lib/`. When you run `terraform apply`, the source is zipped and uploaded to a GCS bucket. The object name includes a content hash, so any code change triggers a redeployment.

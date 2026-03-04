@@ -1,0 +1,20 @@
+{
+  "name": "extensions-terraform",
+  "private": true,
+  "scripts": {
+    "build": "pnpm -r --filter './*/function' run build",
+    "clean": "pnpm -r --filter './*/function' run clean",
+    "lint": "pnpm -r run lint",
+    "lint:fix": "pnpm -r run lint:fix",
+    "tf:validate": "for d in */terraform; do echo \"--- $d ---\" && terraform -chdir=\"$d\" validate; done",
+    "tf:fmt": "terraform fmt -recursive",
+    "scaffold": "bun cli/src/index.ts init"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.4.5",
+    "@types/node": "^24.0.0",
+    "rimraf": "^6.1.3",
+    "typescript": "^5.9.3"
+  },
+  "packageManager": "pnpm@10.12.1"
+}

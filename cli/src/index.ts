@@ -37,8 +37,8 @@ async function main() {
 
   console.log(`
 Next steps:
-  cd ${ctx.extensionName}/function && bun install
-  cd ../${ctx.extensionName}/terraform && terraform init && terraform validate`);
+  pnpm install
+  cd ${ctx.extensionName}/terraform && terraform init && terraform validate`);
 }
 
 main().catch((err: unknown) => {
