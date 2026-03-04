@@ -1,0 +1,15 @@
+{
+  "name": "extensions-terraform-cli",
+  "description": "CLI for scaffolding new terraform extensions",
+  "private": true,
+  "scripts": {
+    "init": "bun src/index.ts init"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.3"
+  }
+}

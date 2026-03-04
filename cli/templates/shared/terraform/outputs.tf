@@ -4,7 +4,7 @@ output "function_name" {
 }
 
 output "function_uri" {
-  description = "The HTTPS URI of the Cloud Function (Cloud Run service URL). Access is via Eventarc trigger only — not publicly invocable."
+  description = "The HTTPS URI of the Cloud Function (Cloud Run service URL)."
   value       = module.cloud_function.function_uri
 }
 
@@ -19,11 +19,11 @@ output "source_bucket" {
 }
 
 output "eventarc_trigger" {
-  description = "The Eventarc trigger name created for the Firestore document.written event."
+  description = "The Eventarc trigger resource name. Empty string for HTTP-triggered functions."
   value       = module.cloud_function.eventarc_trigger
 }
 
 output "eventarc_custom_channel" {
-  description = "The Eventarc channel for custom lifecycle events (onStart, onError, onSuccess, onCompletion). Only set when enable_custom_events is true."
+  description = "The Eventarc channel for custom lifecycle events. Null when enable_custom_eventarc_channel is false."
   value       = module.cloud_function.custom_eventarc_channel
 }

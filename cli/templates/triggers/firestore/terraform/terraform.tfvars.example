@@ -1,0 +1,10 @@
+project_id      = "my-gcp-project"
+region          = "us-central1"
+collection_path = "{{COLLECTION_PATH}}"
+
+# Function scaling
+# function_name            = "{{FUNCTION_NAME}}"
+# function_min_instances   = 0
+# function_max_instances   = 10
+# function_memory_mb       = 256
+# function_timeout_seconds = 60

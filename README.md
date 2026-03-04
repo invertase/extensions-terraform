@@ -27,8 +27,9 @@ A Cloud Function that listens for writes to a Firestore collection and automatic
 
 ## Prerequisites
 
-- [Terraform](https://developer.hashicorp.com/terraform/install) >= 1.0
+- [Terraform](https://developer.hashicorp.com/terraform/install) >= 1.5
 - [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) (`gcloud`)
+- [Bun](https://bun.sh) >= 1.0 (for the CLI and function development)
 - A Google Cloud project with billing enabled
 - A Firestore database in the target project
 
@@ -95,24 +96,74 @@ Each extension's Terraform variables are documented in its `variables.tf`. Here 
 | `function_min_instances` | `0` | Minimum instances (set > 0 to avoid cold starts) |
 | `function_max_instances` | `10` | Maximum instances |
 
+## Adding a New Extension
+
+Use the CLI to scaffold a new extension with all the boilerplate in place:
+
+```sh
+cd cli && bun install
+bun src/index.ts init my-new-extension
+```
+
+The CLI prompts for a trigger type (Firestore, HTTP, or Pub/Sub), entry point name, and any trigger-specific configuration, then generates a complete skeleton:
+
+```
+my-new-extension/
+  function/          # Cloud Function source stub (TypeScript)
+    src/index.ts     # Trigger handler ready to implement
+    package.json
+    tsconfig.json
+    biome.json
+  terraform/         # Terraform configuration wired to the shared module
+    main.tf
+    variables.tf
+    outputs.tf
+    providers.tf
+    terraform.tfvars.example
+```
+
+After scaffolding:
+
+```sh
+cd my-new-extension/function && bun install
+cd ../terraform && terraform init && terraform validate
+```
+
 ## Project Structure
 
 ```
 extensions-terraform/
+  cli/                     # Scaffolding CLI (Bun / TypeScript)
+    src/
+      index.ts             # Entry point
+      prompts.ts           # Interactive prompts
+      scaffold.ts          # Template walking and token interpolation
+      types.ts             # Shared types
+    templates/
+      shared/              # Files copied into every extension
+      triggers/
+        firestore/         # Firestore document write templates
+        http/              # HTTP / callable templates
+        pubsub/            # Pub/Sub templates
+  modules/
+    gcp-cloud-function/    # Shared Terraform module
+      main.tf              # Service account, IAM, GCS source, Cloud Function
+      variables.tf         # Module interface
+      outputs.tf           # Exported values
   firestore-translate-text/
-    function/          # Cloud Function source (TypeScript)
+    function/              # Cloud Function source (TypeScript)
       src/
-        index.ts       # Entry point and Firestore trigger
-        config.ts      # Environment variable configuration
-        translate/     # Translation logic (strategy pattern)
-        logs/          # Structured logging
+        index.ts           # Entry point and Firestore trigger
+        config.ts          # Environment variable configuration
+        translate/         # Translation logic (strategy pattern)
+        logs/              # Structured logging
       package.json
       tsconfig.json
-    terraform/         # Terraform configuration
-      main.tf          # Resources (function, IAM, APIs, storage)
-      variables.tf     # Input variables
-      outputs.tf       # Output values
-      providers.tf     # Provider configuration
+    terraform/             # Extension-specific Terraform
+      main.tf              # APIs, domain IAM, Secret Manager, module call
+      variables.tf         # Input variables
+      outputs.tf           # Output values
+      providers.tf         # Provider configuration
 ```
 
 ## Working on the Function Code
@@ -121,8 +172,8 @@ If you want to modify the Cloud Function source:
 
 ```sh
 cd firestore-translate-text/function
-npm install
-npm run build
+bun install
+bun run build
 ```
 
 The build compiles TypeScript from `src/` to `lib/`. When you run `terraform apply`, the source is zipped and uploaded to a GCS bucket. The object name includes a content hash, so any code change triggers a redeployment.
