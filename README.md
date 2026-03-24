@@ -1,3 +1,8 @@
+# Note: 
+
+This is not in GA or for use in production, merely a demo/experiment repository.
+
+
 # Extensions Terraform
 
 Self-managed Google Cloud Functions that replicate [Firebase Extensions](https://extensions.dev) functionality, deployed and managed entirely through Terraform.
